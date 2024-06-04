@@ -83,7 +83,7 @@ def collaborateurs_communs(G,u,v): #Q2
 
 
 
-def collaborateurs_proches(G,u,k): #Q3
+def collaborateurs_proches(G,u,k): #Q3 #1
     """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
     
     Parametres:
@@ -94,6 +94,29 @@ def collaborateurs_proches(G,u,k): #Q3
     if u not in G.nodes:
         print(u,"est un illustre inconnu")
         return None
+    collaborateurs = set()
+    collaborateurs.add(u)
+    print(collaborateurs)
+    for i in range(k):
+        collaborateurs_directs = set()
+        for c in collaborateurs:
+            for voisin in G.adj[c]:
+                if voisin not in collaborateurs:
+                    collaborateurs_directs.add(voisin)
+        collaborateurs = collaborateurs.union(collaborateurs_directs)
+    return collaborateurs
+
+def collaborateurs_proches(G,u,k):#Q3 #2
+    """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
+    
+    Parametres:
+        G: le graphe
+        u: le sommet de départ
+        k: la distance depuis u
+    """
+    if u not in G.nodes:
+        print(u,"est un illustre inconnu")
+        return False   #None avant
     collaborateurs = set()
     collaborateurs.add(u)
     print(collaborateurs)
@@ -133,7 +156,17 @@ def acteur_plus_central(G):
             acteur_central = acteur
     return acteur_central
 
+def dist_naive(G,act1,act2):
+    return collaborateurs_proches(G,act1,act2),G.number_of_nodes()
 
+
+
+def est_proche(G,u,v,k=1):
+    if collaborateurs_proches(G,u,k)!= False: 
+        if u in collaborateurs_proches(G,u,k) and v in collaborateurs_proches(G,u,k):
+            return True
+   
+    return False
 
 
 def distance_max_acteurs(G):
