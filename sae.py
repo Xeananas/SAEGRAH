@@ -37,7 +37,7 @@ def txt_to_json(input_file, output_file):
 txt_to_json('data_100.txt', 'data_100.json')
 
 
-def json_vers_nx(chemin):
+def json_vers_nx(chemin): #Q1
 
     with open(chemin, 'r') as f:
         donnees = json.load(f)
@@ -66,7 +66,7 @@ plt.clf()
 #nx.draw(graph, with_labels=True)
 #plt.show()
 
-def acteurs_communs(G,u,v):
+def collaborateurs_communs(G,u,v): #Q2
     
   
     act1 = set(G.neighbors(u))
@@ -74,16 +74,16 @@ def acteurs_communs(G,u,v):
     communs = act1.intersection(act2)
     if len(communs) == 0:
         return "aucun acteur sont en commun!"
-    return communs
+    return print("les acteurs communs sont : " ,communs)
+
+# acteurs_communs(graph,"Peter Kowanko","Al Pacino")
 
 
 
 
 
 
-
-
-def collaborateurs_proches(G,u,k):
+def collaborateurs_proches(G,u,k): #Q3
     """Fonction renvoyant l'ensemble des acteurs à distance au plus k de l'acteur u dans le graphe G. La fonction renvoie None si u est absent du graphe.
     
     Parametres:
@@ -105,19 +105,59 @@ def collaborateurs_proches(G,u,k):
                     collaborateurs_directs.add(voisin)
         collaborateurs = collaborateurs.union(collaborateurs_directs)
     return collaborateurs
-print(collaborateurs_proches(graph,"Peter Kowanko",1))
 
 
-def distance_acteurs(G,act1,k,act2):
+
+def distance_acteurs(G, act1, act2):
     distance = 0
-    while act1 and act2 not in  collaborateurs_proches(G,act1,k):
-        distance +=1
-    return distance+1
+    while act2 not in collaborateurs_proches(G, act1, distance):
+        distance += 1
+    return distance
 
-            
+def centralite(G, acteur):
+    distance_max = 0
+    for autre_acteur in G.nodes:
+        if acteur != autre_acteur:
+            distance = distance_acteurs(G, acteur, autre_acteur)
+            if distance > distance_max:
+                distance_max = distance
+    return distance_max
+
+def acteur_plus_central(G):
+    acteur_central = None
+    centralite_max = 0
+    for acteur in G.nodes:
+        centralite_acteur = centralite(G, acteur)
+        if centralite_acteur > centralite_max:
+            centralite_max = centralite_acteur
+            acteur_central = acteur
+    return acteur_central
 
 
 
 
+def distance_max_acteurs(G):
+    distance_max = 0
+    for acteur1 in G.nodes:
+        for acteur2 in G.nodes:
+            if acteur1 != acteur2:
+                distance = distance_acteurs(G, acteur1, acteur2)
+                if distance > distance_max:
+                    distance_max = distance
+    return distance_max
+print(distance_max_acteurs(graph))
 
-    
+def centre_groupe_acteurs(G, groupe):
+    centre = None
+    distance_min = float('inf')
+    for acteur in G.nodes:
+        distance_totale = 0
+        for membre in groupe:
+            distance = distance_acteurs(G, acteur, membre)
+            distance_totale += distance
+        if distance_totale < distance_min:
+            distance_min = distance_totale
+            centre = acteur
+    return centre
+
+ 
