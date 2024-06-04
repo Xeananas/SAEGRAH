@@ -34,7 +34,7 @@ def txt_to_json(input_file, output_file):
     except Exception as e:
         print("Il y a une erreur !")
 
-txt_to_json('data_100.txt', 'data_100.json')
+txt_to_json('data_100(1).txt', 'data_100(1).json')
 
 
 def json_vers_nx(chemin):
@@ -60,7 +60,7 @@ def json_vers_nx(chemin):
 
 
     return G
-graph = json_vers_nx('data_100.json')
+graph = json_vers_nx('data_100(1).json')
 plt.clf()
 
 #nx.draw(graph, with_labels=True)
@@ -93,7 +93,7 @@ def collaborateurs_proches(G,u,k):
     """
     if u not in G.nodes:
         print(u,"est un illustre inconnu")
-        return None
+        return False   #None avant
     collaborateurs = set()
     collaborateurs.add(u)
     print(collaborateurs)
@@ -108,11 +108,25 @@ def collaborateurs_proches(G,u,k):
 print(collaborateurs_proches(graph,"Peter Kowanko",1))
 
 
-def distance_acteurs(G,act1,k,act2):
+def distance_acteurs(G,act1,act2):
     distance = 0
-    while act1 and act2 not in  collaborateurs_proches(G,act1,k):
+    while (act1 and act2) not in  collaborateurs_proches(G,act1,distance):
+        print()
         distance +=1
-    return distance+1
+    return distance
+
+def dist_naive(G,act1,act2):
+    return collaborateurs_proches(G,act1,act2),G.number_of_nodes()
+
+
+
+def est_proche(G,u,v,k=1):
+    if collaborateurs_proches(G,u,k)!= False: 
+        if u in collaborateurs_proches(G,u,k) and v in collaborateurs_proches(G,u,k):
+            return True
+   
+    return False
+print(est_proche(graph,"Rutger Hauer", "Jerry Hall",1))
 
             
 
